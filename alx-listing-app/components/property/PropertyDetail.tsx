@@ -1,8 +1,8 @@
 import { PropertyProps } from "@/interfaces";
 import { useState } from "react";
 import { StarIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
 import BookingSection from "./BookingSection";
+import ReviewSection from "./ReviewSection";
 
 const PropertyDetail: React.FC<{ property: PropertyProps }> = ({ property }) => {
   const [activeTab, setActiveTab] = useState("description");
@@ -19,7 +19,7 @@ const PropertyDetail: React.FC<{ property: PropertyProps }> = ({ property }) => 
     }));
   };
 
-  // Mock reviews data - in a real app, this would come from an API
+  // Mock reviews data
   const reviews = [
     {
       id: 1,
@@ -40,192 +40,91 @@ const PropertyDetail: React.FC<{ property: PropertyProps }> = ({ property }) => 
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Property Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">{property.name}</h1>
-        <div className="flex items-center mt-2">
-          <div className="flex items-center">
-            <StarIcon className="h-5 w-5 text-yellow-400" />
-            <span className="ml-1 text-gray-700">{property.rating}</span>
-          </div>
-          <span className="mx-2 text-gray-400">·</span>
-          <span className="text-gray-600">
-            {property.address.city}, {property.address.state}, {property.address.country}
-          </span>
-        </div>
+    <div className="container mx-auto p-6">
+      <h1 className="text-4xl font-bold">{property.name}</h1>
+      <div className="flex items-center space-x-2 mt-2">
+        <span className="text-yellow-500">{property.rating} stars</span>
+        <span>{property.address.city}, {property.address.country}</span>
       </div>
 
       {/* Image Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="md:col-span-2 row-span-2">
-          <img 
-            src={property.image || "/placeholder-property.jpg"} 
-            alt={property.name}
-            className="w-full h-full object-cover rounded-l-2xl"
-          />
-        </div>
-        <div className="md:col-span-1">
-          <img 
-            src="https://source.unsplash.com/random/300x200?interior" 
-            alt="Property interior"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="md:col-span-1">
-          <img 
-            src="https://source.unsplash.com/random/300x200?bathroom" 
-            alt="Property bathroom"
-            className="w-full h-full object-cover rounded-tr-2xl"
-          />
-        </div>
-        <div className="md:col-span-1">
-          <img 
-            src="https://source.unsplash.com/random/300x200?bedroom" 
-            alt="Property bedroom"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="md:col-span-1">
-          <img 
-            src="https://source.unsplash.com/random/300x200?kitchen" 
-            alt="Property kitchen"
-            className="w-full h-full object-cover rounded-br-2xl"
-          />
-        </div>
+      <div className="grid grid-cols-2 gap-4 mt-4">
+        <img 
+          src={property.image || "/placeholder-property.jpg"} 
+          alt={property.name} 
+          className="col-span-2 w-full h-96 object-cover rounded-lg" 
+        />
+        {/* Additional images can be added here */}
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Main Content */}
+      <div className="flex flex-col md:flex-row gap-8 mt-6">
+        {/* Left Column - Property Info */}
         <div className="md:w-2/3">
           {/* Tabs */}
-          <div className="border-b border-gray-200 mb-6">
-            <nav className="-mb-px flex space-x-8">
-              <button
-                onClick={() => setActiveTab("description")}
-                className={`${
-                  activeTab === "description"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Description
-              </button>
-              <button
-                onClick={() => setActiveTab("amenities")}
-                className={`${
-                  activeTab === "amenities"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Amenities
-              </button>
-              <button
-                onClick={() => setActiveTab("reviews")}
-                className={`${
-                  activeTab === "reviews"
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm`}
-              >
-                Reviews
-              </button>
+          <div className="border-b border-gray-200">
+            <nav className="flex -mb-px">
+              {['description', 'reviews', 'host'].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`py-4 px-6 text-center border-b-2 font-medium text-sm ${
+                    activeTab === tab
+                      ? 'border-indigo-500 text-indigo-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                </button>
+              ))}
             </nav>
           </div>
 
           {/* Tab Content */}
-          <div className="mb-8">
-            {activeTab === "description" && (
+          <div className="mt-6">
+            {activeTab === 'description' && (
               <div>
                 <h2 className="text-2xl font-semibold mb-4">About this place</h2>
-                <p className="text-gray-700 mb-4">
+                <p className="text-gray-700">
                   {property.name} is a beautiful property located in the heart of {property.address.city}. 
                   This {property.offers.bed} bedroom, {property.offers.shower} bathroom property can 
                   comfortably accommodate {property.offers.occupants} guests.
                 </p>
-                <p className="text-gray-700">
-                  Enjoy the modern amenities and stunning views that this property has to offer. 
-                  Perfect for families, couples, or business travelers looking for a comfortable 
-                  and convenient stay.
-                </p>
-              </div>
-            )}
-
-            {activeTab === "amenities" && (
-              <div>
-                <h2 className="text-2xl font-semibold mb-6">What this place offers</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {property.category.map((amenity, index) => (
-                    <div key={index} className="flex items-center">
-                      <svg 
-                        className="h-5 w-5 text-green-500 mr-2" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor"
-                      >
-                        <path 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round" 
-                          strokeWidth={2} 
-                          d="M5 13l4 4L19 7" 
-                        />
-                      </svg>
-                      <span className="text-gray-700">{amenity}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {activeTab === "reviews" && (
-              <div>
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-semibold">
-                    <StarIcon className="inline h-5 w-5 text-yellow-400" />
-                    <span className="ml-1">{property.rating} · 24 reviews</span>
-                  </h2>
-                </div>
                 
-                <div className="space-y-8">
-                  {reviews.map((review) => (
-                    <div key={review.id} className="border-b border-gray-200 pb-6">
-                      <div className="flex items-center mb-2">
-                        <img 
-                          src={review.avatar} 
-                          alt={review.name}
-                          className="h-12 w-12 rounded-full mr-4"
-                        />
-                        <div>
-                          <h4 className="font-semibold">{review.name}</h4>
-                          <p className="text-gray-500 text-sm">{review.date}</p>
-                        </div>
-                      </div>
-                      <div className="flex mt-1">
-                        {[...Array(5)].map((_, i) => (
-                          <StarIcon 
-                            key={i} 
-                            className={`h-5 w-5 ${
-                              i < review.rating ? 'text-yellow-400' : 'text-gray-300'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <p className="mt-2 text-gray-700">{review.comment}</p>
-                    </div>
+                <h2 className="text-2xl font-semibold mt-8 mb-4">What this place offers</h2>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                  {property.category.map((amenity, index) => (
+                    <li key={index} className="flex items-center space-x-2">
+                      <span className="text-green-500">✓</span>
+                      <span>{amenity}</span>
+                    </li>
                   ))}
-                </div>
+                </ul>
+              </div>
+            )}
+
+            {activeTab === 'reviews' && (
+              <ReviewSection 
+                reviews={reviews} 
+                averageRating={property.rating} 
+                totalReviews={reviews.length} 
+              />
+            )}
+
+            {activeTab === 'host' && (
+              <div>
+                <h2 className="text-2xl font-semibold mb-4">About the host</h2>
+                <p>Host information will be displayed here.</p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Booking Section */}
+        {/* Right Column - Booking Section */}
         <div className="md:w-1/3">
           <BookingSection 
             price={property.price} 
-            onDateChange={handleDateChange}
-            selectedDates={selectedDates}
+            selectedDates={selectedDates} 
+            onDateChange={handleDateChange} 
           />
         </div>
       </div>
