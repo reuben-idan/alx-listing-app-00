@@ -1,37 +1,37 @@
 export interface CardProps {
-  image: string;
   title: string;
   description: string;
-  price: string;
-  location: string;
-  onAction?: () => void;
-  actionLabel?: string;
+  imageUrl: string;
 }
 
 export interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: () => void;
-  type?: "button" | "submit" | "reset";
-  variant?: "primary" | "secondary";
-  disabled?: boolean;
-  className?: string;
+  label: string;
+  onClick: () => void;
+}
+
+export interface PropertyAddress {
+  city: string;
+  country: string;
+}
+
+export interface PropertyReview {
+  name: string;
+  avatar: string; // URL to user's profile picture
+  rating: number; 
+  comment: string;
 }
 
 export interface PropertyProps {
+  id: string;
   name: string;
-  address: {
-    state: string;
-    city: string;
-    country: string;
-  };
-  rating: number;
-  category: string[];
-  price: number;
-  offers: {
-    bed: string;
-    shower: string;
-    occupants: string;
-  };
-  image: string;
-  discount: string;
+  rating: number; 
+  address: PropertyAddress;
+  description: string;
+  image: string; // main image URL
+  images?: string[]; // optional gallery images
+  category: string[]; // amenities or services
+  price: number; // nightly rate
+  reviews: PropertyReview[];
+  hostBio: string;
 }
+
